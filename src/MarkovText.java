@@ -19,22 +19,31 @@ public class MarkovText {
         System.out.println("**Markov Text Generator**\n");
         System.out.print("Please enter training file path: ");
         String trainingPath = userInput.nextLine();
-        System.out.println("Number of sentences to generate: ");
-        try {
-            sentenceCount = userInput.nextInt();
-        } catch (InputMismatchException e) {
-            System.out.println("Not an number, set to default (2)");
-            sentenceCount = 2;
-        }
 
-        String testOutputPath = "Test/MarkovChainContents.txt";
-        PrintStream out = makeOutputPrintStream(testOutputPath);
-        read(makeFileScanner(trainingPath));
-        out.println(chain.toString());
-        for (int i = 0; i < sentenceCount; i++) {
-            System.out.println(generateSentence());
-        }
+        while (true) {
+            System.out.print("Number of sentences to generate (type non digit or 0 to quit): ");
+            try {
+                sentenceCount = userInput.nextInt();
+            } catch (InputMismatchException e) {
+                break;
+            }
 
+            if (sentenceCount == 0) break;
+
+            System.out.println();
+            if (chain != null && chain.isEmpty()) {
+                String testOutputPath = "Test/MarkovChainContents.txt";
+                PrintStream out = makeOutputPrintStream(testOutputPath);
+                read(makeFileScanner(trainingPath));
+                out.println(chain.toString());
+                out.close();
+            }
+            for (int i = 0; i < sentenceCount; i++) {
+                System.out.println(generateSentence());
+            }
+            System.out.println();
+        }
+        userInput.close();
     }
 
     private Scanner makeFileScanner(String path) {
@@ -73,39 +82,50 @@ public class MarkovText {
 
     public String generateSentence() {
         boolean midSentence = false;
+        int wordCount = 0;
+        int minWords = (int)(Math.random() * 10 + 3);
         String sentence = "";
         String word = "";
         MarkovNode currentNode = null;
 
         while (true) {
+            int index = 0;
             if (!midSentence) {
                 word = chain.getStarterWord();
                 currentNode = chain.getNode(word);
                 sentence += word + " ";
                 midSentence = true;
-                continue;
             }
-            if (Math.random() * 10 < 1f) {
-                int index = (int)Math.floor(Math.random() * chain.size);
+
+            //randomly change word sometimes
+            if (Math.random() * 10 < 0.5f) {
+                index = (int)(Math.random() * chain.size);
                 word = chain.getWord(index);
                 currentNode = chain.getNode(word);
-                sentence += word + " ";
             }
-            int index = (int)Math.random() * currentNode.getChain().size;
+
+            index = (int)(Math.random() * currentNode.getChain().size);
             if (index > currentNode.getChain().size) index--;
             word = currentNode.getChain().getWord(index);
-            currentNode = chain.getNode(word);
 
-            if (word.equals(".") || word.equals("!") || word.equals(",") || word.equals("?")) {
+            currentNode = chain.getNode(word);
+            while (wordCount < minWords && currentNode.ender) {
+                index = (int)Math.floor(Math.random() * chain.size);
+                word = chain.getWord(index);
+                currentNode = chain.getNode(word);
+            }
+
+            if (word.equals(".") || word.equals("!") || word.equals(",") || word.equals("?") || word.equals(";") || word.equals(":")) {
                 sentence = sentence.substring(0, sentence.length() - 1);
                 sentence += word + " ";
-                if (!word.equals(",")) return sentence;
+                if (!word.equals(",") && !(word.equals(";") && !(word.equals(":")))) return sentence;
             } else if (word.equals("-") || word.equals("/")) {
                 sentence = sentence.substring(0, sentence.length() - 1);
                 sentence += word;
             } else {
                 sentence += word + " ";
             }
+            wordCount++;
         }
     }
 
@@ -118,7 +138,7 @@ public class MarkovText {
         for (int i = 0; i < line.length(); i++) {
             char a = line.charAt(i);
 
-            if (a == '"' || a == '“') continue;
+            if (a == '"' || a == '“' || a == '’' || a == ')' || a == '(') continue;
 
             //build digits by character
             if (Character.isDigit(a) || a == '$' && !lookForDigits) {

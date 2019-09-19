@@ -9,6 +9,7 @@ public class MarkovChain {
 
     public void addMarkovNode(String s) {
         MarkovNode newNode = new MarkovNode(s);
+        if (s.equals(".") || s.equals("!") || (s.equals("!"))) newNode.ender = true;
         if (head == null) {
             head = newNode;
         } else {
@@ -16,6 +17,11 @@ public class MarkovChain {
             head = newNode;
         }
         size++;
+    }
+
+    public boolean isEmpty() {
+        if (head == null) return true;
+        return false;
     }
 
     private void moveToFront(String s) {
