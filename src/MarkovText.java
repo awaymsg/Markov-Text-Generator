@@ -36,7 +36,7 @@ public class MarkovText {
 
             System.out.println();
             if (chain != null && chain.isEmpty()) {
-                String testOutputPath = "Test/MarkovChainContents.txt";
+                String testOutputPath = "Debug-Output/MarkovChainContents.txt";
                 PrintStream out = makeOutputPrintStream(testOutputPath);
                 read(makeFileScanner(trainingPath));
                 out.println(chain.toString());
