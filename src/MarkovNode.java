@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/**
+ * Node in Markov Chain, each contains its own chain
+ */
 public class MarkovNode {
     private String word;
     private MarkovChain nextWords;

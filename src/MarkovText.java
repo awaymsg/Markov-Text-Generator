@@ -94,6 +94,8 @@ public class MarkovText {
 
         while (true) {
             int index = 0;
+
+            //gets a starting word if starting a new sentence
             if (!midSentence) {
                 word = chain.getStarterWord();
                 currentNode = chain.getNode(word);
@@ -108,20 +110,25 @@ public class MarkovText {
                 currentNode = chain.getNode(word);
             }
 
+            //gets a random word from the chain in the MarkovNode
             index = (int)(Math.random() * currentNode.getChain().size);
             if (index > currentNode.getChain().size) index--;
             word = currentNode.getChain().getWord(index);
-
             currentNode = chain.getNode(word);
+
+            //ensure sentence is not too short
             while (wordCount < minWords && currentNode.ender) {
                 index = (int)Math.floor(Math.random() * chain.size);
                 word = chain.getWord(index);
                 currentNode = chain.getNode(word);
             }
 
+            //special instructions for special characters
             if (word.equals(".") || word.equals("!") || word.equals(",") || word.equals("?") || word.equals(";") || word.equals(":")) {
                 sentence = sentence.substring(0, sentence.length() - 1);
                 sentence += word + " ";
+
+                //returns the sentence if it is ended
                 if (!word.equals(",") && !(word.equals(";") && !(word.equals(":")))) return sentence;
             } else if (word.equals("-") || word.equals("/")) {
                 sentence = sentence.substring(0, sentence.length() - 1);
@@ -178,6 +185,7 @@ public class MarkovText {
                         previous = chain.getNode(Character.toString(a));
                     }
                 } else {
+                    //add completed word
                     word = word.toLowerCase();
                     if (!chain.contains(word)) {
                         chain.addMarkovNode(word);
@@ -189,6 +197,7 @@ public class MarkovText {
                     previous = chain.getNode(word);
                     word = "";
 
+                    //add special characters
                     if (a != ' ') {
                         if (!chain.contains(Character.toString(a))) {
                             chain.addMarkovNode(Character.toString(a));

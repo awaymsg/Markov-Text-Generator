@@ -1,3 +1,6 @@
+/**
+ * Markov chain, essentially a linked list of MarkovNodes
+ */
 public class MarkovChain {
     private MarkovNode head;
     public int size;
