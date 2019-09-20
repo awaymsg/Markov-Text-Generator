@@ -86,8 +86,8 @@ public class MarkovChain {
         MarkovNode current = head;
         String s = "";
         while (current != null) {
-            s += current.getWord() + "[" + current.getChain().size + "] - ";
-            for (int i = 0; i < current.getChain().size; i++) {
+            s += current.getWord() + "[" + current.getChain().size() + "] - ";
+            for (int i = 0; i < current.getChain().size(); i++) {
                 s += current.getChain().getWord(i) + " ";
             }
             s += "\n";
@@ -106,7 +106,7 @@ public class MarkovChain {
             current = current.next;
         }
 
-        int index = (int)(Math.random() * starterWords.size);
+        int index = (int)(Math.random() * starterWords.size());
         return starterWords.getWord(index);
     }
 }
