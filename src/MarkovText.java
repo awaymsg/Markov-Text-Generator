@@ -25,7 +25,7 @@ public class MarkovText {
         String trainingPath = userInput.nextLine();
 
         while (true) {
-            System.out.print("Number of sentences to generate (type non digit or 0 to quit): ");
+            System.out.print("Number of sentences to generate (type non-digit or 0 to quit): ");
             try {
                 sentenceCount = userInput.nextInt();
             } catch (InputMismatchException e) {
@@ -105,20 +105,20 @@ public class MarkovText {
 
             //randomly change word sometimes
             if (Math.random() * 10 < 0.5f) {
-                index = (int)(Math.random() * chain.size);
+                index = (int)(Math.random() * chain.size());
                 word = chain.getWord(index);
                 currentNode = chain.getNode(word);
             }
 
             //gets a random word from the chain in the MarkovNode
-            index = (int)(Math.random() * currentNode.getChain().size);
-            if (index > currentNode.getChain().size) index--;
+            index = (int)(Math.random() * currentNode.getChain().size());
+            if (index > currentNode.getChain().size()) index--;
             word = currentNode.getChain().getWord(index);
             currentNode = chain.getNode(word);
 
             //ensure sentence is not too short
             while (wordCount < minWords && currentNode.ender) {
-                index = (int)Math.floor(Math.random() * chain.size);
+                index = (int)Math.floor(Math.random() * chain.size());
                 word = chain.getWord(index);
                 currentNode = chain.getNode(word);
             }

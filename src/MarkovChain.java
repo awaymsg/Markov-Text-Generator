@@ -3,7 +3,7 @@
  */
 public class MarkovChain {
     private MarkovNode head;
-    public int size;
+    private int size;
 
     public MarkovChain() {
         size = 0;
@@ -22,13 +22,17 @@ public class MarkovChain {
         size++;
     }
 
+    public int size() {
+        return size;
+    }
+
     public boolean isEmpty() {
         if (head == null) return true;
         return false;
     }
 
     private void moveToFront(String s) {
-        if (head.getWord().equals(s)) {
+        if (head == null || head.getWord().equals(s)) {
             return;
         }
         MarkovNode current = head.next;
