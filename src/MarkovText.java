@@ -4,6 +4,10 @@ import java.io.PrintStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+/**
+ * Markov Text Generator
+ * @author Kathryn Liang
+ */
 public class MarkovText {
 
     private MarkovChain chain;
