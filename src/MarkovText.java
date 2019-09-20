@@ -79,7 +79,7 @@ public class MarkovText {
     private void read(Scanner fileScanner) {
         String line = "";
         while (fileScanner.hasNextLine()) {
-            line += fileScanner.nextLine();
+            line += fileScanner.nextLine() + " ";
         }
         createMarkovChain(line);
     }
@@ -125,13 +125,17 @@ public class MarkovText {
 
             //special instructions for special characters
             if (word.equals(".") || word.equals("!") || word.equals(",") || word.equals("?") || word.equals(";") || word.equals(":")) {
-                sentence = sentence.substring(0, sentence.length() - 1);
+                if (sentence.charAt(sentence.length() - 1) == ' ') {
+                    sentence = sentence.substring(0, sentence.length() - 1);
+                }
                 sentence += word + " ";
 
                 //returns the sentence if it is ended
-                if (!word.equals(",") && !(word.equals(";") && !(word.equals(":")))) return sentence;
+                if (!word.equals(",") && !word.equals(";") && !word.equals(":")) return sentence;
             } else if (word.equals("-") || word.equals("/")) {
-                sentence = sentence.substring(0, sentence.length() - 1);
+                if (sentence.charAt(sentence.length() - 1) == ' ') {
+                    sentence = sentence.substring(0, sentence.length() - 1);
+                }
                 sentence += word;
             } else {
                 sentence += word + " ";
@@ -148,8 +152,6 @@ public class MarkovText {
 
         for (int i = 0; i < line.length(); i++) {
             char a = line.charAt(i);
-
-            if (a == '"' || a == '“' || a == '’' || a == ')' || a == '(') continue;
 
             //build digits by character
             if (Character.isDigit(a) || a == '$' && !lookForDigits) {
@@ -176,15 +178,7 @@ public class MarkovText {
 
             //build words by character
             if (!Character.isLetter(a) && a != '\'' || i == line.length() - 1) {
-                if (word.equals("")) {
-                    if (a != ' ') {
-                        if (!chain.contains(Character.toString(a))) {
-                            chain.addMarkovNode(Character.toString(a));
-                        }
-                        if (previous != null) previous.addToChain(Character.toString(a));
-                        previous = chain.getNode(Character.toString(a));
-                    }
-                } else {
+                if (!word.equals("")) {
                     //add completed word
                     word = word.toLowerCase();
                     if (!chain.contains(word)) {
@@ -198,11 +192,12 @@ public class MarkovText {
                     word = "";
 
                     //add special characters
+                    if (a == '"' || a == '“' || a == '’' || a == ')' || a == '(') continue;
                     if (a != ' ') {
                         if (!chain.contains(Character.toString(a))) {
                             chain.addMarkovNode(Character.toString(a));
                         }
-                        if (previous != null) previous.addToChain(Character.toString(a));
+                        previous.addToChain(Character.toString(a));
                         previous = chain.getNode(Character.toString(a));
                     }
                 }
