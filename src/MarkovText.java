@@ -25,6 +25,14 @@ public class MarkovText {
         String trainingPath = userInput.nextLine();
 
         while (true) {
+            if (chain != null && chain.isEmpty()) {
+                String testOutputPath = "Debug-Output/MarkovChainContents.txt";
+                PrintStream out = makeOutputPrintStream(testOutputPath);
+                read(makeFileScanner(trainingPath));
+                out.println(chain.toString());
+                out.close();
+            }
+
             System.out.print("Number of sentences to generate (type non-digit or 0 to quit): ");
             try {
                 sentenceCount = userInput.nextInt();
@@ -35,13 +43,6 @@ public class MarkovText {
             if (sentenceCount == 0) break;
 
             System.out.println();
-            if (chain != null && chain.isEmpty()) {
-                String testOutputPath = "Debug-Output/MarkovChainContents.txt";
-                PrintStream out = makeOutputPrintStream(testOutputPath);
-                read(makeFileScanner(trainingPath));
-                out.println(chain.toString());
-                out.close();
-            }
             for (int i = 0; i < sentenceCount; i++) {
                 System.out.println(generateSentence());
             }
@@ -181,6 +182,7 @@ public class MarkovText {
                 if (!word.equals("")) {
                     //add completed word
                     word = word.toLowerCase();
+                    if (word.charAt(0) == '\'' || word.charAt(0) == '"') word = word.substring(1);
                     if (!chain.contains(word)) {
                         chain.addMarkovNode(word);
                     }
