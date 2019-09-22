@@ -31,21 +31,10 @@ public class MarkovChain {
         return false;
     }
 
-    private void moveToFront(String s) {
-        if (head == null || head.getWord().equals(s)) {
-            return;
-        }
-        MarkovNode current = head.next;
-        MarkovNode previous = head;
-        while (current != null) {
-            if (current.getWord().equals(s)) {
-                previous.next = current.next;
-                current.next = head;
-                head = current;
-            }
-            previous = current;
-            current = current.next;
-        }
+    private void moveToFront(MarkovNode previous, MarkovNode current) {
+        previous.next = current.next;
+        current.next = head;
+        head = current;
     }
 
     public String getWord(int index) {
@@ -60,12 +49,17 @@ public class MarkovChain {
     }
 
     public boolean contains(String s) {
-        MarkovNode current = head;
+        if (head == null) return false;
+        if (head.getWord().equals(s)) return true;
+
+        MarkovNode current = head.next;
+        MarkovNode previous = head;
         while (current != null) {
             if (current.getWord().equals(s)) {
-                moveToFront(s);
+                moveToFront(previous, current);
                 return true;
             }
+            previous = current;
             current = current.next;
         }
         return false;
